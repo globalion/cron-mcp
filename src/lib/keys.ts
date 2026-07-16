@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { prisma } from "./db";
 
-const KEY_PREFIX = "tg_live_";
+const KEY_PREFIX = "cron_live_";
 
 export interface GeneratedKey {
   raw: string;
