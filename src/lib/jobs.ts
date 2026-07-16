@@ -6,6 +6,7 @@
 // cron-parse.
 
 import { CronExpressionParser } from "cron-parser";
+import { Prisma } from "@prisma/client";
 import { prisma } from "./db";
 
 export interface ScheduleInput {
@@ -48,8 +49,8 @@ export async function scheduleJob(userId: string, input: ScheduleInput) {
       cron: input.cron,
       prompt: input.prompt,
       callbackUrl: input.callbackUrl,
-      callbackHeaders: input.callbackHeaders ?? {},
-      metadata: input.metadata ?? {},
+      callbackHeaders: (input.callbackHeaders ?? {}) as Prisma.InputJsonValue,
+      metadata: (input.metadata ?? {}) as Prisma.InputJsonValue,
       timezone: tz,
       nextFireAt,
     },
@@ -105,8 +106,8 @@ export async function updateJob(userId: string, id: string, input: UpdateInput) 
       cron,
       prompt: input.prompt ?? existing.prompt,
       callbackUrl: input.callbackUrl ?? existing.callbackUrl,
-      callbackHeaders: input.callbackHeaders ?? (existing.callbackHeaders as Record<string, string>),
-      metadata: input.metadata ?? (existing.metadata as Record<string, unknown>),
+      callbackHeaders: (input.callbackHeaders ?? existing.callbackHeaders ?? {}) as Prisma.InputJsonValue,
+      metadata: (input.metadata ?? existing.metadata ?? {}) as Prisma.InputJsonValue,
       timezone: tz,
       isActive: input.isActive ?? existing.isActive,
       nextFireAt,
