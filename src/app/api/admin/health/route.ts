@@ -12,7 +12,7 @@ export async function GET() {
     await prisma.$queryRaw`SELECT 1`;
     return NextResponse.json({
       ok: true,
-      service: "telegram-mcp",
+      service: "cron-mcp",
       version: "0.1.0",
       time: new Date().toISOString(),
     });

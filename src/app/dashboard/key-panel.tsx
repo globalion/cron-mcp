@@ -74,7 +74,7 @@ export function KeyPanel({
         <>
           <div className="mb-3 text-neutral-300">
             You don&apos;t have a key yet. Generate one only if you want to
-            plug telegram-mcp into Claude Desktop, Cursor, or another MCP
+            plug cron-mcp into Claude Desktop, Cursor, or another MCP
             client.
           </div>
           <button
