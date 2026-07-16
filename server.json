@@ -1,0 +1,25 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.Shreyas-Profile/cron-mcp",
+  "description": "Cron-as-a-service MCP. Schedule any prompt to run on any cron expression; when it fires we POST to your callback URL. No LLM in the loop.",
+  "status": "active",
+  "repository": {
+    "url": "https://github.com/globalion/cron-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://cron.regiq.in/api/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <apiKey> — get yours at https://cron.regiq.in after Google sign-in.",
+          "is_required": true,
+          "is_secret": true
+        }
+      ]
+    }
+  ]
+}

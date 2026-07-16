@@ -1,0 +1,46 @@
+# cron-mcp deployment stack.
+#
+# Container names are prefixed with `cron-mcp-` per Globalion's shared-server
+# rule (unique container name per MCP). Host port 3015 is the internal
+# fallback for direct debugging — external traffic reaches this via the
+# Cloudflare tunnel pointing at http://172.17.0.1:3015 on the shared platform
+# network (see the tunnel's config.yml on the Hetzner box).
+#
+# No agent-runner sidecar — cron-mcp doesn't need one. The web service
+# itself runs the scheduler loop (see src/lib/scheduler.ts, started by
+# Next.js instrumentation on server boot).
+
+services:
+  db:
+    container_name: cron-mcp-db
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cron_mcp
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d cron_mcp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    container_name: cron-mcp-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://admin:admin@db:5432/cron_mcp
+    ports:
+      - "3015:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
