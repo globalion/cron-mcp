@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.Shreyas-Profile/cron-mcp",
-  "description": "Cron-as-a-service MCP. Schedule any prompt to run on any cron expression; when it fires we POST to your callback URL. No LLM in the loop.",
+  "description": "Cron-as-a-service MCP. Schedule prompts; when the cron fires we POST to your callback URL.",
   "status": "active",
   "repository": {
     "url": "https://github.com/globalion/cron-mcp",
