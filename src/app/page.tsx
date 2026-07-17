@@ -87,6 +87,30 @@ export default async function LandingPage() {
 
       <section className="mb-12">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-500">
+          Limits (per API key)
+        </h2>
+        <div className="grid grid-cols-1 gap-2 text-sm text-neutral-400 sm:grid-cols-3">
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3">
+            <div className="text-xs uppercase text-neutral-500">Jobs per user</div>
+            <div className="mt-1 text-neutral-200">20 max</div>
+          </div>
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3">
+            <div className="text-xs uppercase text-neutral-500">Fire interval</div>
+            <div className="mt-1 text-neutral-200">5 min minimum</div>
+          </div>
+          <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-3">
+            <div className="text-xs uppercase text-neutral-500">Cost</div>
+            <div className="mt-1 text-neutral-200">Free forever</div>
+          </div>
+        </div>
+        <p className="mt-3 text-xs text-neutral-500">
+          Fair-use caps to keep the free tier free. Building an aggregator platform
+          that needs more? Email shreyas.pavuluri@gmail.com.
+        </p>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-neutral-500">
           Setup
         </h2>
         <ol className="space-y-2 text-neutral-300">

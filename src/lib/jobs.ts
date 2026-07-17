@@ -39,8 +39,43 @@ export function computeNextFire(cron: string, timezone: string, from: Date = new
   }
 }
 
+// Hard caps that protect the fleet:
+//   MAX_JOBS_PER_USER — one user can't hoard the scheduler tick budget
+//   MIN_INTERVAL_MS   — a "* * * * *" style job would fire every minute
+//     which can DDoS a callback URL. We reject anything faster than 5 min
+//     between consecutive fires.
+const MAX_JOBS_PER_USER = 20;
+const MIN_INTERVAL_MS = 5 * 60 * 1000;
+
+function assertMinInterval(cron: string, tz: string) {
+  try {
+    const iter = CronExpressionParser.parse(cron, { currentDate: new Date(), tz });
+    const first = iter.next().toDate().getTime();
+    const second = iter.next().toDate().getTime();
+    if (second - first < MIN_INTERVAL_MS) {
+      throw new Error(
+        `Cron '${cron}' fires faster than every 5 minutes. Minimum interval is 5 min ` +
+          `(so callbacks don't get hammered). Use a slower schedule.`,
+      );
+    }
+  } catch (err) {
+    if ((err as Error).message.startsWith("Cron '")) throw err;
+    // Invalid-cron errors surface elsewhere; don't re-wrap here.
+  }
+}
+
 export async function scheduleJob(userId: string, input: ScheduleInput) {
   const tz = input.timezone || "UTC";
+
+  const activeCount = await prisma.job.count({ where: { userId } });
+  if (activeCount >= MAX_JOBS_PER_USER) {
+    throw new Error(
+      `You already have ${activeCount} scheduled jobs (limit ${MAX_JOBS_PER_USER}). ` +
+        `Delete some via delete_job before adding more.`,
+    );
+  }
+  assertMinInterval(input.cron, tz);
+
   const nextFireAt = computeNextFire(input.cron, tz);
   const row = await prisma.job.create({
     data: {
